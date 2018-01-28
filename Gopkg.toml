@@ -32,3 +32,7 @@
 [[constraint]]
   name = "github.com/dgraph-io/dgraph"
   version = "1.0.2"
+
+[[constraint]]
+  name = "github.com/newrelic/go-agent"
+  version = "1.11.0"
