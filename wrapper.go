@@ -8,41 +8,38 @@ import (
 	"google.golang.org/grpc"
 )
 
-type GetTransactionFunc func(context.Context) newrelic.Transaction
-
 var (
 	datastoreDgraph = newrelic.DatastoreProduct("Dgraph")
 )
 
 // Wrap creates wraps the DgraphClient to spport to creating newrelic segments on each requests.
-func Wrap(dc api.DgraphClient, getTransaction GetTransactionFunc, opts ...Option) api.DgraphClient {
+func Wrap(dc api.DgraphClient, txn newrelic.Transaction, opts ...Option) api.DgraphClient {
 	o := &options{}
 	for _, f := range opts {
 		f(o)
 	}
 	return &wrappedClient{
-		dc:             dc,
-		getTransaction: getTransaction,
-		options:        o,
+		dc:      dc,
+		txn:     txn,
+		options: o,
 	}
 }
 
 type wrappedClient struct {
-	dc             api.DgraphClient
-	getTransaction GetTransactionFunc
-	options        *options
+	dc      api.DgraphClient
+	txn     newrelic.Transaction
+	options *options
 }
 
 func (c *wrappedClient) Query(ctx context.Context, in *api.Request, opts ...grpc.CallOption) (*api.Response, error) {
-	txn := c.getTransaction(ctx)
-	if txn != nil {
+	if c.txn != nil {
 		params := make(map[string]interface{}, len(in.GetVars())+2)
 		for k, v := range in.GetVars() {
 			params[k] = v
 		}
 		params["start_ts"] = in.GetStartTs()
 		params["lin_read"] = in.GetLinRead()
-		seg := c.createSegment(txn)
+		seg := c.createSegment(c.txn)
 		defer seg.End()
 		seg.Operation = "Query"
 		seg.ParameterizedQuery = in.GetQuery()
@@ -52,9 +49,8 @@ func (c *wrappedClient) Query(ctx context.Context, in *api.Request, opts ...grpc
 }
 
 func (c *wrappedClient) Mutate(ctx context.Context, in *api.Mutation, opts ...grpc.CallOption) (*api.Assigned, error) {
-	txn := c.getTransaction(ctx)
-	if txn != nil {
-		seg := c.createSegment(txn)
+	if c.txn != nil {
+		seg := c.createSegment(c.txn)
 		defer seg.End()
 		seg.Operation = "Mutate"
 		seg.QueryParameters = map[string]interface{}{
@@ -73,9 +69,8 @@ func (c *wrappedClient) Mutate(ctx context.Context, in *api.Mutation, opts ...gr
 }
 
 func (c *wrappedClient) Alter(ctx context.Context, in *api.Operation, opts ...grpc.CallOption) (*api.Payload, error) {
-	txn := c.getTransaction(ctx)
-	if txn != nil {
-		seg := c.createSegment(txn)
+	if c.txn != nil {
+		seg := c.createSegment(c.txn)
 		defer seg.End()
 		seg.Operation = "Alter"
 		seg.QueryParameters = map[string]interface{}{
@@ -88,9 +83,8 @@ func (c *wrappedClient) Alter(ctx context.Context, in *api.Operation, opts ...gr
 }
 
 func (c *wrappedClient) CommitOrAbort(ctx context.Context, in *api.TxnContext, opts ...grpc.CallOption) (*api.TxnContext, error) {
-	txn := c.getTransaction(ctx)
-	if txn != nil {
-		seg := c.createSegment(txn)
+	if c.txn != nil {
+		seg := c.createSegment(c.txn)
 		defer seg.End()
 		seg.Operation = "Commit"
 		if in.Aborted {
@@ -107,9 +101,8 @@ func (c *wrappedClient) CommitOrAbort(ctx context.Context, in *api.TxnContext, o
 }
 
 func (c *wrappedClient) CheckVersion(ctx context.Context, in *api.Check, opts ...grpc.CallOption) (*api.Version, error) {
-	txn := c.getTransaction(ctx)
-	if txn != nil {
-		seg := c.createSegment(txn)
+	if c.txn != nil {
+		seg := c.createSegment(c.txn)
 		defer seg.End()
 		seg.Operation = "CheckVersion"
 	}
@@ -118,7 +111,7 @@ func (c *wrappedClient) CheckVersion(ctx context.Context, in *api.Check, opts ..
 
 func (c *wrappedClient) createSegment(txn newrelic.Transaction) newrelic.DatastoreSegment {
 	return newrelic.DatastoreSegment{
-		StartTime:    newrelic.StartSegmentNow(txn),
+		StartTime:    newrelic.StartSegmentNow(c.txn),
 		Product:      datastoreDgraph,
 		Host:         c.options.host,
 		PortPathOrID: c.options.id,
