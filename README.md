@@ -17,7 +17,7 @@ clients := make([]api.DgraphClient, len(addrs), len(addrs))
 
 for i, addr := range addrs {
 	conn, _ := grpc.Dial(addr, grpc.WithInsecure())
-	clients[i] = nrdgraph.Wrap(api.NewDgraphClient(d), nrdgraph.WithHost(addr))
+	clients[i] = nrdgraph.Wrap(api.NewDgraphClient(d), txn, nrdgraph.WithHost(addr))
 }
 
 client := client.NewDgraphClient(clients...)
