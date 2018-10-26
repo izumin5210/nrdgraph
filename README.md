@@ -20,5 +20,5 @@ for i, addr := range addrs {
 	clients[i] = nrdgraph.Wrap(api.NewDgraphClient(d), txn, nrdgraph.WithHost(addr))
 }
 
-client := client.NewDgraphClient(clients...)
+client := dgo.NewDgraphClient(clients...)
 ```

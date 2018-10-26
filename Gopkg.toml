@@ -30,8 +30,8 @@
   unused-packages = true
 
 [[constraint]]
-  name = "github.com/dgraph-io/dgraph"
-  version = "1.0.2"
+  name = "github.com/dgraph-io/dgo"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/newrelic/go-agent"

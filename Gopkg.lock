@@ -2,24 +2,29 @@
 
 
 [[projects]]
-  name = "github.com/dgraph-io/dgraph"
+  branch = "master"
+  digest = "1:cb6ff74de928452e45d8a7ce5e92ac06e31cd3b53e3a2009f433e42255ebbf7f"
+  name = "github.com/dgraph-io/dgo"
   packages = ["protos/api"]
-  revision = "fb2d3d3f97d19dfc08d016162f718fe4972ca946"
-  version = "v1.0.2"
+  pruneopts = "UT"
+  revision = "92bc132b4838ddff5b6c2387cefb87b84c1bbc56"
 
 [[projects]]
   branch = "master"
+  digest = "1:8caffcd8995b0eae7d2c18b2baefabef331bb05b1e16ed2b26b732c3349e6989"
   name = "github.com/golang/protobuf"
   packages = [
     "proto",
     "ptypes",
     "ptypes/any",
     "ptypes/duration",
-    "ptypes/timestamp"
+    "ptypes/timestamp",
   ]
+  pruneopts = "UT"
   revision = "925541529c1fa6821df4e44ce2723319eb2be768"
 
 [[projects]]
+  digest = "1:266d082179f3a29a4bdcf1dcc49d4a304f5c7107e65bd22d1fecacf45f1ac348"
   name = "github.com/newrelic/go-agent"
   packages = [
     ".",
@@ -28,13 +33,15 @@
     "internal/jsonx",
     "internal/logger",
     "internal/sysinfo",
-    "internal/utilization"
+    "internal/utilization",
   ]
+  pruneopts = "UT"
   revision = "f5bce3387232559bcbe6a5f8227c4bf508dac1ba"
   version = "v1.11.0"
 
 [[projects]]
   branch = "master"
+  digest = "1:677a5d026fcc0c1e764f2d688a363316e3b157cec39b8fbaa0c1a1796aac3643"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -43,12 +50,14 @@
     "idna",
     "internal/timeseries",
     "lex/httplex",
-    "trace"
+    "trace",
   ]
+  pruneopts = "UT"
   revision = "0ed95abb35c445290478a5348a7b38bb154135fd"
 
 [[projects]]
   branch = "master"
+  digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -64,17 +73,21 @@
     "unicode/bidi",
     "unicode/cldr",
     "unicode/norm",
-    "unicode/rangetable"
+    "unicode/rangetable",
   ]
+  pruneopts = "UT"
   revision = "e19ae1496984b1c655b8044a65c0300a3c878dd3"
 
 [[projects]]
   branch = "master"
+  digest = "1:cd018653a358d4b743a9d3bee89e825521f2ab2f2ec0770164bf7632d8d73ab7"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
+  pruneopts = "UT"
   revision = "4eb30f4778eed4c258ba66527a0d4f9ec8a36c45"
 
 [[projects]]
+  digest = "1:146674af28df95a4c6ccd0522484a18d7ecd70619817f0774519fa1351badbab"
   name = "google.golang.org/grpc"
   packages = [
     ".",
@@ -98,14 +111,19 @@
     "stats",
     "status",
     "tap",
-    "transport"
+    "transport",
   ]
+  pruneopts = "UT"
   revision = "6b51017f791ae1cfbec89c52efdf444b13b550ef"
   version = "v1.9.2"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d227cec100f9621e95243c12f7123785527ee4db6309371d72bdc75d679f7d22"
+  input-imports = [
+    "github.com/dgraph-io/dgo/protos/api",
+    "github.com/newrelic/go-agent",
+    "google.golang.org/grpc",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

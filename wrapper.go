@@ -3,7 +3,7 @@ package nrdgraph
 import (
 	"context"
 
-	"github.com/dgraph-io/dgraph/protos/api"
+	"github.com/dgraph-io/dgo/protos/api"
 	"github.com/newrelic/go-agent"
 	"google.golang.org/grpc"
 )
