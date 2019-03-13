@@ -35,4 +35,4 @@
 
 [[constraint]]
   name = "github.com/newrelic/go-agent"
-  version = "1.11.0"
+  version = "^2.1"
